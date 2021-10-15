@@ -7,33 +7,53 @@
     <div class="row">
         <div class="col-3"></div>
         <div class="col-6">
-            <div>
-                <a class="btn btn-primary" data-toggle="collapse" href="#collapsePostForm" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    Create new post
-                </a>
-                <div class="collapse" id="collapsePostForm">
-                    <form method="POST" action="{% url 'main:posts'%}">
-                        {% csrf_token %}
-                        {{form.as_p}}
-                            <button type="submit" class="btn btn-primary" >Post</button>
-                    </form>
-                </div><br>
+
+            <div class="pb-4">
+                <div class="">
+                    <div class="row">
+                        <div class="col-3"></div>
+                        <div class="col-6 align_center">
+                            <a class="btn btn-primary" data-toggle="collapse" href="#collapsePostForm" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                Create new post
+                            </a>
+                        </div>
+                        <div class="col-3"></div>
+                    </div>
+                    <div class="collapse align_right" id="collapsePostForm">
+                        <form method="POST" action="{% url 'main:posts'%}">
+                            {% csrf_token %}
+                            {{form.as_p}}
+                                <button type="submit" class="btn btn-primary " >Post</button>
+                        </form>
+                    </div>
+                </div>
             </div>
             
 
             {% for post in posts %}
-                <div>
-                    <div>
-                        
-                        {{post.author}}
-                    </div><br><br>
-
-                    {{post.title}}<br><br>
-                    <div class="alas font-weight-normal">
+                <div class="card my-4">
+                    <a class="pl-4 align_center" data-toggle="collapse" href="#collapsePostContent{{post.id}}" role="button">
+                        <h4>{{post.title}}</h4>
+                    </a>
+                    <div class="collapse alas font-weight-normal px-4 align_center" id="collapsePostContent{{post.id}}">
                         {{post.content}}
-                    </div><br><br>
-                    {{post.date_created}}<br><br><br>
-                </div><br>
+                    </div>
+                    <div> 
+                        <div class="row smouth_gray">
+                            <div class="col-1"></div>
+                            <div class="row col-10">
+                                <div class="col-4">
+                                    <h5>Posted by:{{post.author}}</h5>
+                                </div>
+                                <div class="col-8 align_right">
+                                    <h5>Posted : {{post.date_created}}</h5>
+                                </div>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+                    
+                </div>
             {% endfor %}
 
         </div>

@@ -14,6 +14,9 @@ def index(request):
 def home(request):
     return render(request,'main/home.html')
 
+def features(request):
+    return render(request,'main/features.html')
+
 @login_required
 def posts(request):
     if request.method == 'POST':
