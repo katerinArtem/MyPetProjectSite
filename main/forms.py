@@ -8,9 +8,14 @@ from django.contrib.auth import (
     authenticate, get_user_model, password_validation,
 )
 from django.utils.translation import gettext, gettext_lazy as _
-from .models import CustomUser
+from .models import CustomUser,Post
 
 
+
+class NewPostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title','content']
 
 class UserUpdateForm(forms.ModelForm):
     class Meta:

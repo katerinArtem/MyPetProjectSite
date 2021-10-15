@@ -3,6 +3,19 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 # Create your models here.
+class Post(models.Model):
+    author = models.CharField(max_length=50,verbose_name="Автор")
+    title = models.CharField(max_length=255,verbose_name="Название")
+    content = models.TextField(verbose_name="Контент")
+    date_created = models.DateTimeField(auto_now_add = True,verbose_name="Дата публикации")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Статья'
+        verbose_name_plural = 'Статьи'
+
 class CustomUserManager(BaseUserManager):
     def create_user(self,email,username,password = None):
         if not email:
@@ -24,8 +37,6 @@ class CustomUserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using = self._db)
         return user
-
-
 class CustomUser(AbstractBaseUser):
     username = models.CharField(max_length=50,verbose_name="Имя пользователя")
     email = models.EmailField(unique=True,max_length=50,verbose_name="Аддрес электронной почты")

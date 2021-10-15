@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404, render,redirect
 from django.http import HttpResponse,Http404,HttpResponseRedirect, request
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import NewUserForm,UserUpdateForm
+from .forms import NewUserForm,UserUpdateForm,NewPostForm
 from django.contrib.auth import login
 from django.contrib import messages
+from .models import Post,CustomUser
 
 
 def index(request):
@@ -12,6 +13,27 @@ def index(request):
 
 def home(request):
     return render(request,'main/home.html')
+
+@login_required
+def posts(request):
+    if request.method == 'POST':
+        form = NewPostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user.username
+            post.save()
+            messages.success(request, "Post added successful." )
+            return redirect('main:posts')
+        messages.error(request, "Post doun't  added. Invalid information.")
+    form = NewPostForm()
+    form.fields['title'].widget.attrs = {
+        'class':'form-control','id':'inputTitle','placeholder':'title'
+    }
+    form.fields['content'].widget.attrs = {
+        'class':'form-control','id':'inputContent','placeholder':'content'
+    }
+    posts = Post.objects.all().order_by('-id')[:5]
+    return render(request,'main/posts.html',context={'form':form,'posts':posts})
 
 def sign_up(request):
     if request.method == "POST":
