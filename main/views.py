@@ -20,7 +20,15 @@ def features(request):
 
 @login_required
 def profile_posts(request):
-    return render(request,'main/profile_posts.html')
+    posts = Post.objects.filter(author = request.user.username).order_by('-id')
+    posts_paginator = Paginator(posts,6)
+    page_num = request.GET.get('page',1)
+    page = posts_paginator.get_page(page_num)
+
+    context = {
+        'page':page
+    }
+    return render(request,'main/profile_posts.html',context)
 
 @login_required
 def posts(request):
@@ -42,7 +50,7 @@ def posts(request):
     }
     posts = Post.objects.all().order_by('-id')
     posts_paginator = Paginator(posts,6)
-    page_num = request.GET.get('page')
+    page_num = request.GET.get('page',1)
     page = posts_paginator.get_page(page_num)
 
     context = {

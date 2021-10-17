@@ -2,7 +2,74 @@
 
 
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="infinite_container ">
+                {% for post in page.object_list %}
+                    <div class="d-inline-flex infinite-item">    
+                        <div class="card my-2 px-2 my-4">
+                            <div class="d-flex flex-column ">
+                                <div class="mb-auto p-1 d-flex  smouth_gray">
+                                    <div class="">
+                                        <h5>Posted by:{{post.author}}</h5>
+                                    </div>
+                                    <div class="align_right">
+                                        <h5>Posted : {{post.date_created}}</h5>
+                                    </div>
+                                </div>         
+
+                                <a class="p-1 ml-4 align_center  " data-toggle="collapse" href="#collapsePostContent{{post.id}}" role="button">
+                                    <h4>{{post.title}}</h4>
+                                </a>
+    
+                                <div class="p-1 collapse alas font-weight-normal px-4 align_center" id="collapsePostContent{{post.id}}">
+                                    {{post.content}}
+                                </div>
+                                
+                            </div>   
+                        </div>
+
+                        <div class="my-4 mx-4">
+                            <div class="thirty">
+                                <a href="#">
+                                    <i class="bi bi-trash" style='font-size:20px;'></i>
+                                </a>
+                            </div>
+                            <div class="thirty">
+                                <a href="#">
+                                    <i class="bi bi-pencil"style='font-size:20px;'></i>
+                                </a>
+                            </div>
+                            <div class="thirty">
+                                <a href="#">
+                                    <i class="bi bi-megaphone"style='font-size:20px;'></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="page-links">
+                    {% if page.has_next %}
+                        <a class="infinite-more-link" 
+                        href="{% url 'main:profile_posts' %}?page={{ page.next_page_number }}">
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
 
 
 
+<script>
+    let $infinite_container = $('.infinite_container').infiniteScroll({
+    path: '.infinite-more-link',
+    append: '.infinite-item',
+    });
+    let infScroll = $infinite_container.data('infiniteScroll');
+</script>
 {% endblock %}
