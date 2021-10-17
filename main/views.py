@@ -6,6 +6,7 @@ from .forms import NewUserForm,UserUpdateForm,NewPostForm
 from django.contrib.auth import login
 from django.contrib import messages
 from .models import Post,CustomUser
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 
 def index(request):
@@ -16,6 +17,10 @@ def home(request):
 
 def features(request):
     return render(request,'main/features.html')
+
+@login_required
+def profile_posts(request):
+    return render(request,'main/profile_posts.html')
 
 @login_required
 def posts(request):
@@ -35,8 +40,17 @@ def posts(request):
     form.fields['content'].widget.attrs = {
         'class':'form-control','id':'inputContent','placeholder':'content'
     }
-    posts = Post.objects.all().order_by('-id')[:5]
-    return render(request,'main/posts.html',context={'form':form,'posts':posts})
+    posts = Post.objects.all().order_by('-id')
+    posts_paginator = Paginator(posts,6)
+    page_num = request.GET.get('page')
+    page = posts_paginator.get_page(page_num)
+
+    context = {
+        'form':form,
+        'page':page
+    }
+
+    return render(request,'main/posts.html',context)
 
 def sign_up(request):
     if request.method == "POST":

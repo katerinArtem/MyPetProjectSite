@@ -1,7 +1,6 @@
 {%extends 'base.html'%}
 
 
-
 {%block content%}
 <div class="container">
     <div class="row">
@@ -29,9 +28,9 @@
                 </div>
             </div>
             
-
-            {% for post in posts %}
-                <div class="card my-4">
+            <div class="infinite_container">
+                {% for post in page.object_list %}
+                <div class="card my-4 infinite-item">
                     <a class="pl-4 align_center" data-toggle="collapse" href="#collapsePostContent{{post.id}}" role="button">
                         <h4>{{post.title}}</h4>
                     </a>
@@ -54,8 +53,23 @@
                     </div>
                     
                 </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
 
+            <div class="page-links">
+                {% if page.has_next %}
+                    <a class="infinite-more-link" 
+                    href="{% url 'main:posts' %}?page={{ page.next_page_number }}">
+                    </a>
+                {% endif %}
+            </div>
+            <script>
+                let $infinite_container = $('.infinite_container').infiniteScroll({
+                path: '.infinite-more-link',
+                append: '.infinite-item',
+                });
+                let infScroll = $infinite_container.data('infiniteScroll');
+            </script>
         </div>
         <div class="col-3"></div>
     </div>
