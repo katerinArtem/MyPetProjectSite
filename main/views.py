@@ -18,6 +18,32 @@ def home(request):
 def features(request):
     return render(request,'main/features.html')
 
+
+@login_required
+def update_post(request,id):
+    obj = Post.objects.filter(id = id)
+
+    if request.method == 'POST':
+        form = NewPostForm(request.POST,instance=obj.first())
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Update successful.")
+            return profile_posts(request)
+        messages.error(request, "Unsuccessful update")
+
+    
+
+    form = NewPostForm(instance=obj.first())
+    form.fields['title'].widget.attrs = {'class':'form-control','id':'inputTitle'}
+    form.fields['content'].widget.attrs = {'class':'form-control','id':'inputContent'}
+
+    context = {
+        'update_id':id,
+        'form':form
+    }
+
+    return profile_posts(request,context)
+
 @login_required
 def delete_post(request,id):
     obj = Post.objects.filter(id = id)
@@ -25,15 +51,15 @@ def delete_post(request,id):
     return redirect('main:profile_posts')
 
 @login_required
-def profile_posts(request):
+def profile_posts(request,context={}):
     posts = Post.objects.filter(author = request.user.username).order_by('-id')
     posts_paginator = Paginator(posts,6)
     page_num = request.GET.get('page',1)
     page = posts_paginator.get_page(page_num)
 
-    context = {
-        'page':page
-    }
+    context.update({
+        'page':page,
+    })
     return render(request,'main/profile_posts.html',context)
 
 @login_required

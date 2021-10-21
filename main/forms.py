@@ -17,6 +17,7 @@ class NewPostForm(forms.ModelForm):
         model = Post
         fields = ['title','content']
 
+
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
