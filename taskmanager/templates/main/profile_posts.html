@@ -9,7 +9,7 @@
             <div class="infinite_container ">
                 {% for post in page.object_list %}
                     <div class="d-inline-flex infinite-item">    
-                        <div class="card my-2 px-2 my-4">
+                        <div class="card my-2 px-2">
                             <div class="d-flex flex-column ">
                                 <div class="mb-auto p-1 d-flex  smouth_gray">
                                     <div class="">
@@ -24,7 +24,7 @@
                                     <h4>{{post.title}}</h4>
                                 </a>
     
-                                <div class="p-1 collapse alas font-weight-normal px-4 align_center" id="collapsePostContent{{post.id}}">
+                                <div class="pb-2 p-1 collapse alas font-weight-normal px-4 align_center" id="collapsePostContent{{post.id}}">
                                     {{post.content}}
                                 </div>
                                 
@@ -33,7 +33,7 @@
 
                         <div class="my-4 mx-4">
                             <div class="thirty">
-                                <a href="#">
+                                <a href="{% url 'main:delete_post' id=post.id %}">
                                     <i class="bi bi-trash" style='font-size:20px;'></i>
                                 </a>
                             </div>

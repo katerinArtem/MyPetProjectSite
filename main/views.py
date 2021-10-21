@@ -19,6 +19,12 @@ def features(request):
     return render(request,'main/features.html')
 
 @login_required
+def delete_post(request,id):
+    obj = Post.objects.filter(id = id)
+    obj.delete()
+    return redirect('main:profile_posts')
+
+@login_required
 def profile_posts(request):
     posts = Post.objects.filter(author = request.user.username).order_by('-id')
     posts_paginator = Paginator(posts,6)

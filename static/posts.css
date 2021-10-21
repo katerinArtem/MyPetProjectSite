@@ -1,0 +1,52 @@
+.alas {
+    overflow-wrap: break-word;
+  }
+  
+.content_padding {
+    padding-top: 80px;
+}
+
+.background_content_color {
+  background-color:#eeeeee;
+}
+body{
+  text-align: left;
+}
+
+.card{
+  border-radius: 10px;
+}
+
+.align_center{
+  text-align: center;
+}
+.align_right{
+  text-align: right;
+}
+
+.footer_color{
+  background-color: #343A40;
+  min-height: 100px;
+}
+
+.smouth_gray{
+  color: #B09795;
+}
+
+.content_height{
+  min-height:700px;
+}
+
+.thirty{
+  min-width:20px;
+  min-height: 20px;
+  margin-top: 15.5%;
+  margin-bottom: 15.5%;
+}
+
+.fill_all_width{
+ width:100%;
+}
+.fill_all_height{
+  height:100%;
+}
