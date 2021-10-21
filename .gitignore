@@ -4,5 +4,4 @@ __pycache__
 *.pyc
 myvenv
 db.sqlite3
-/static/js
 .DS_Store
