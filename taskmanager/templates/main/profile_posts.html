@@ -8,9 +8,9 @@
         <div class="col-6">
             <div class="infinite_container ">
                 {% for post in page.object_list %}
-                    <div class="d-inline-flex infinite-item">    
-                        <div class="card my-2 px-2">
-                            <div class="d-flex flex-column ">
+                    <div class="d-flex infinite-item" id="infinite-item ">    
+                        <div class="card my-2 px-2 inline-fix">
+                            <div class="d-flex flex-column" id="d-block">
                                 <div class="mb-auto p-1 d-flex  smouth_gray">
                                     <div class="">
                                         <h5>Posted by:{{post.author}}</h5>

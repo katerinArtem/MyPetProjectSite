@@ -50,3 +50,7 @@ body{
 .fill_all_height{
   height:100%;
 }
+.inline-fix{
+  max-inline-size: max-content;
+  writing-mode: horizontal-tb; 
+}
