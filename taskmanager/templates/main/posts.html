@@ -42,7 +42,12 @@
                             <div class="col-1"></div>
                             <div class="row col-10">
                                 <div class="col-4">
-                                    <h5>Posted by:{{post.author}}</h5>
+                                    <h5>
+                                        Posted by:
+                                        <a class="smouth_gray" href="{% url 'main:public_profile' id=post.authorkey.id %}">
+                                            {{post.authorkey.username}}
+                                        </a>
+                                    </h5>
                                 </div>
                                 <div class="col-8 align_right">
                                     <h5>Posted : {{post.date_created}}</h5>

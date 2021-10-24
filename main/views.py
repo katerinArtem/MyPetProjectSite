@@ -19,6 +19,17 @@ def features(request):
     return render(request,'main/features.html')
 
 
+def public_profile(request,id):
+
+    user = CustomUser.objects.filter(id = id).first() 
+
+    context = {
+        'posts_count':Post.objects.filter(authorkey = user).__len__(),
+        'public_user':user
+    }
+
+    return render(request,'public_profile.html',context)
+
 @login_required
 def update_post(request,id):
     obj = Post.objects.filter(id = id)
@@ -30,8 +41,6 @@ def update_post(request,id):
             messages.success(request,"Update successful.")
             return profile_posts(request)
         messages.error(request, "Unsuccessful update")
-
-    
 
     form = NewPostForm(instance=obj.first())
     form.fields['title'].widget.attrs = {'class':'form-control','id':'inputTitle'}
@@ -68,6 +77,7 @@ def posts(request):
         form = NewPostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
+            post.authorkey = request.user
             post.author = request.user.username
             post.save()
             messages.success(request, "Post added successful." )

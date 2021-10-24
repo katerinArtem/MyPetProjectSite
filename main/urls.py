@@ -12,5 +12,7 @@ urlpatterns = [
     path('features/',views.features,name = 'features'),
     path('profile/posts/',views.profile_posts,name = 'profile_posts'),
     path('profile/posts/delete/<int:id>',views.delete_post,name='delete_post'),
-    path('profile/posts/update/<int:id>',views.update_post,name='update_post')
+    path('profile/posts/update/<int:id>',views.update_post,name='update_post'),
+    path('profile/public/<int:id>',views.public_profile,name="public_profile"),
+    ##path('Posts/post/<int:id>/authors/<str:username>',views.post_author)
 ]
