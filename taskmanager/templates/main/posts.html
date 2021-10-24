@@ -30,34 +30,36 @@
             
             <div class="infinite_container">
                 {% for post in page.object_list %}
-                <div class="card my-4 infinite-item">
-                    <a class="pl-4 align_center" data-toggle="collapse" href="#collapsePostContent{{post.id}}" role="button">
-                        <h4>{{post.title}}</h4>
-                    </a>
-                    <div class="collapse alas font-weight-normal px-4 align_center" id="collapsePostContent{{post.id}}">
-                        {{post.content}}
-                    </div>
-                    <div> 
-                        <div class="row smouth_gray">
-                            <div class="col-1"></div>
-                            <div class="row col-10">
-                                <div class="col-4">
-                                    <h5>
-                                        Posted by:
-                                        <a class="smouth_gray" href="{% url 'main:public_profile' id=post.authorkey.id %}">
-                                            {{post.authorkey.username}}
-                                        </a>
-                                    </h5>
+                <div class="infinite-item">
+                    <div class="card my-4">
+                        <a class="pl-4 align_center" data-toggle="collapse" href="#collapsePostContent{{post.id}}" role="button">
+                            <h4>{{post.title}}</h4>
+                        </a>
+                        <div class="collapse alas font-weight-normal px-4 align_center" id="collapsePostContent{{post.id}}">
+                            {{post.content}}
+                        </div>
+                        <div> 
+                            <div class="row smouth_gray">
+                                <div class="col-1"></div>
+                                <div class="row col-10">
+                                    <div class="col-4">
+                                        <h5>
+                                            Posted by:
+                                            <a class="smouth_gray" href="{% url 'main:public_profile' id=post.authorkey.id %}">
+                                                {{post.authorkey.username}}
+                                            </a>
+                                        </h5>
+                                    </div>
+                                    <div class="col-8 align_right">
+                                        <h5>Posted : {{post.date_created}}</h5>
+                                    </div>
                                 </div>
-                                <div class="col-8 align_right">
-                                    <h5>Posted : {{post.date_created}}</h5>
-                                </div>
+                                <div class="col-1"></div>
                             </div>
-                            <div class="col-1"></div>
                         </div>
                     </div>
-                    
                 </div>
+                
                 {% endfor %}
             </div>
 
