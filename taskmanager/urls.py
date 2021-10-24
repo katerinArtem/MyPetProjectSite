@@ -21,9 +21,11 @@ from django.urls import path,include
 from django.views.generic.base import View 
 from .forms import LoginForm
 from django.contrib.auth.views import LoginView
+from . import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('main.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
     path('login/',LoginView.as_view(template_name="login.html",authentication_form=LoginForm),name='_login'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
