@@ -8,10 +8,38 @@
             <div class="col-4"></div>
 
             <div class="col-4 card">
-                <form method="POST" action="{% url 'main:profile_update'%}">
-                    {% csrf_token %}
+                <form method="POST" action="{% url 'main:profile_update'%}" enctype='multipart/form-data'>
+                    {% csrf_token %}    
+                    
                     <div class="form-group">
-                        {{form.as_p}}
+                        
+                        <div class="mt-3 d-flex flex-column" id="userFaviconDiv">
+                            {{form.user_favicon}}
+                        </div>
+                    <p>
+                        <label for="inputUserName">
+                            Имя пользователя:
+                        </label>
+                        {{form.username}} 
+                    </p>
+                    <p>
+                        <label for="inputEmail">
+                            Аддрес электронной почты:
+                        </label>
+                        {{form.email}} 
+                    </p>
+                    <p>
+                        <label for="inputFirstName">
+                            Имя:
+                        </label>
+                        {{form.first_name}} 
+                    </p>
+                    <p>
+                        <label for="inputLastName">
+                            Фамилия:
+                        </label>
+                        {{form.last_name}} 
+                    </p>
                     </div>
                     <div class="form-group">
                         <label  for="LastLogin">Последний вход</label>
@@ -21,13 +49,44 @@
                         <label  for="DateJoined">Дата регистрации</label>
                         {{user.date_joined}}
                     </div>
+                    
+                    
                     <button type="submit" class="btn btn-primary ">Uply changes</button>
                 </form>
             </div>
-
             <div class="col-4"></div>
         </div>
     </div>    
 </div>
+<script>
+   let fav = document.getElementById('userFaviconDiv')
+   let img = document.createElement('img')
+   img.src = fav.childNodes[1].href
+   img.className = 'img_cirqle' 
+   fav.appendChild(img)
+   for(let i = 0;i<8;i++){
+        fav.removeChild(fav.childNodes[0])
+   }
+   fav.appendChild(fav.childNodes[0])
+   fav.replaceChild(fav.childNodes[1],fav.childNodes[0])
 
+   let favInput = document.getElementById('id_user_favicon')
+   favInput.className = 'custom-file-input'
+   favInput.id = 'customInput'
+
+   let inputDiv = document.createElement('div')
+   inputDiv.className = 'custom-file my-3'
+   inputDiv.id = 'customInput'
+
+   let inputLabel = document.createElement('label')
+   inputLabel.className = 'custom-file-label'
+   inputLabel.htmlFor = 'customInput'
+   inputLabel.innerText = 'chose file'
+
+   inputDiv.appendChild(inputLabel)
+   inputDiv.appendChild(favInput)
+   
+   fav.appendChild(inputDiv)
+   
+</script>
 {% endblock %}
