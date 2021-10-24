@@ -17,6 +17,10 @@ body{
   border-radius: 10px;
 }
 
+.img_cirqle{
+  border-radius: 50%;
+}
+
 .align_center{
   text-align: center;
 }
