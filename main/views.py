@@ -135,7 +135,7 @@ def sign_up(request):
 def profile_update(request):
     user = request.user
     if (request.method == 'POST'):
-        form = UserUpdateForm(request.POST,instance=user)
+        form = UserUpdateForm(request.POST,request.FILES,instance=user)
         if form.is_valid():
             form.save()
             messages.success(request,"Update successful.")
