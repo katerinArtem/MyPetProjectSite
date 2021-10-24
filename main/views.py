@@ -21,11 +21,11 @@ def features(request):
 
 def public_profile(request,id):
 
-    user = CustomUser.objects.filter(id = id).first() 
+    public_user = CustomUser.objects.filter(id = id).first() 
 
     context = {
-        'posts_count':Post.objects.filter(authorkey = user).__len__(),
-        'public_user':user
+        'posts_count':Post.objects.filter(authorkey = public_user).__len__(),
+        'public_user':public_user
     }
 
     return render(request,'public_profile.html',context)

@@ -76,6 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'taskmanager.wsgi.application'
 AUTH_USER_MODEL = 'main.CustomUser'
+LOGIN_URL = '/login/'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
