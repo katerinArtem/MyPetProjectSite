@@ -10,7 +10,6 @@ class Post(models.Model):
     title = models.CharField(max_length=255,verbose_name="Название")
     content = models.TextField(verbose_name="Контент")
     date_created = models.DateTimeField(auto_now_add = True,verbose_name="Дата публикации")
-    
 
     def __str__(self):
         return self.title
@@ -50,6 +49,7 @@ class CustomUser(AbstractBaseUser):
     is_active =models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    user_favicon = models.ImageField(null=True,blank = True,upload_to='images/')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['username']
