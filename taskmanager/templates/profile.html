@@ -2,26 +2,32 @@
 
 {% block title %}{{user.username}}{% endblock %}
 {% block content %}
-<form method="POST" action="{% url 'main:profile_update'%}">
-    {% csrf_token %}
-    <div class="container">
+<div class="container">
+    <div class="">
         <div class="row">
             <div class="col-4"></div>
-            <div class="col-4">
-                <div class="form-group">
-                    {{form.as_p}}
-                </div>
-                <div class="form-group">
-                    <label  for="LastLogin">Последний вход</label>
-                    {{user.last_login}}
-                </div>
-                <div class="form-group">
-                    <label  for="DateJoined">Дата регистрации</label>
-                    {{user.date_joined}}
-                </div>
-                <button type="submit" class="btn btn-primary">Uply changes</button>
-            </div>    
+
+            <div class="col-4 card">
+                <form method="POST" action="{% url 'main:profile_update'%}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{form.as_p}}
+                    </div>
+                    <div class="form-group">
+                        <label  for="LastLogin">Последний вход</label>
+                        {{user.last_login}}
+                    </div>
+                    <div class="form-group">
+                        <label  for="DateJoined">Дата регистрации</label>
+                        {{user.date_joined}}
+                    </div>
+                    <button type="submit" class="btn btn-primary ">Uply changes</button>
+                </form>
+            </div>
+
+            <div class="col-4"></div>
         </div>
-    </div>
-</form>
+    </div>    
+</div>
+
 {% endblock %}

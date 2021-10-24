@@ -54,3 +54,7 @@ body{
   max-inline-size: max-content;
   writing-mode: horizontal-tb; 
 }
+
+.out_of_wrap{
+  overflow-wrap:unset;
+}
