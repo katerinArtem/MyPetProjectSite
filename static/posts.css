@@ -6,7 +6,6 @@
     padding-top: 80px;
 }
 
-
 .background_content_color {
   background-color:#eeeeee;
 }
@@ -22,6 +21,8 @@ body{
   max-width: 100px;
   border-radius: 50%;
 }
+
+
 
 .align_center{
   text-align: center;
