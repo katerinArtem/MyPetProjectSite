@@ -1,5 +1,6 @@
 from typing import Optional
 from django import forms
+from django.db.models import fields
 from django.db.models.fields import CharField 
 from django.forms import widgets,Textarea,TextInput,PasswordInput,ImageField
 from django.contrib.auth.models import User
@@ -8,9 +9,18 @@ from django.contrib.auth import (
     authenticate, get_user_model, password_validation,
 )
 from django.utils.translation import gettext, gettext_lazy as _
-from .models import CustomUser,Post
+from .models import CustomUser,Post,Message
 
 
+class NewDialogForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['text','addressee']
+
+class NewMessageForm(forms.ModelForm):    
+    class Meta:
+        model = Message
+        fields = ['text']
 
 class NewPostForm(forms.ModelForm):
     class Meta:
