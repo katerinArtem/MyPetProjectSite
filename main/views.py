@@ -5,8 +5,11 @@ from django.contrib.auth.models import User
 from .forms import NewUserForm,UserUpdateForm,NewPostForm
 from django.contrib.auth import login
 from django.contrib import messages
-from .models import Post,CustomUser
+from .models import Post,CustomUser,Message
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from itertools import chain
+from operator import attrgetter
+from django.db.models import Q
 
 
 def index(request):
@@ -17,6 +20,41 @@ def home(request):
 
 def features(request):
     return render(request,'main/features.html')
+
+def profile_messages(request,context={}):
+
+    messages = Message.objects.filter(
+        Q(addressee=request.user) |
+        Q(author=request.user)
+    )
+
+    interlocutor_ids = set()
+
+    for it in messages.all():
+        interlocutor_ids.add(it.author.id)
+
+    interlocutor_ids.remove(request.user.id)    
+
+    dialogs = []
+    
+    for it in interlocutor_ids:
+        interlocutor = CustomUser.objects.filter(id = it).first()
+        messages = Message.objects.filter(author = interlocutor).all()
+
+        messages = Message.objects.filter(
+            Q(Q(addressee=request.user) & Q(author=interlocutor))|
+            Q(Q(author=request.user) & Q(addressee=interlocutor)) 
+        )
+        messages = sorted(messages,key=attrgetter('date_created'))
+
+        dialog = {'messages': messages,'interlocutor': interlocutor}
+        dialogs.append(dialog)
+
+    context.update({
+        'dialogs':dialogs
+    })
+    
+    return render(request,'main/profile_messages.html',context)
 
 
 def public_profile(request,id):
