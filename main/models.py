@@ -3,6 +3,18 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 # Create your models here.
+class Message(models.Model):
+    text = models.TextField(verbose_name="Контент")
+    author = models.ForeignKey('CustomUser',on_delete=models.CASCADE,related_name='author')
+    addressee = models.ManyToManyField('CustomUser',related_name='addressee_set')
+    date_created = models.DateTimeField(auto_now_add = True,verbose_name="Время отправки")
+
+    def __str__(self):
+        return str(self.author.username)  +":  "+ str(self.text)
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Собщения'
 
 class Post(models.Model):
     authorkey = models.ForeignKey('CustomUser',on_delete=models.CASCADE,)
