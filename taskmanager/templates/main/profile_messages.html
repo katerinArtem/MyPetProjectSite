@@ -4,31 +4,60 @@
 {% block content %}
     <div class="container">
         <div>
-            {% for dialog in dialogs %}
-                <a class="btn btn-primary" 
-                data-toggle="collapse" 
-                href="#collapseDialog{{dialog.interlocutor.id}}" 
-                role="button" 
-                aria-expanded="false" 
-                aria-controls="collapseExample">
-                    {{dialog.interlocutor}}
-                </a>
-                <div class="collapse" id="collapseDialog{{dialog.interlocutor.id}}">        
-                    {% for message in dialog.messages %}
-                        <div>
-                            <h1>
-                                {{message.author.username}}
-                            </h1>
-                            <h2>
-                                {{message.text}}:
-                            </h2>
-                            <h3>
-                                {{message.date_created}}
-                            </h3>
-                        </div>
-                    {% endfor %}   
-                </div>
-            {% endfor %}
+            <div class="card px-2 py-2">
+                <form action="{% url 'main:profile_messages' %}?addressee_id=-1" method="POST">
+                    {% csrf_token %}
+                    {{dialogForm.as_p}}
+                    <input type="submit" class="btn btn-primary " ></input>
+                </form>
+            </div>
+            <div class="card px-2 py-2">
+                {% for dialog in dialogs %}
+                    <a class="btn btn-primary" 
+                        data-toggle="collapse" 
+                        href="#collapseDialog{{dialog.interlocutor.id}}" 
+                        role="button" 
+                        aria-expanded="false" 
+                        aria-controls="collapseExample">
+                        {{dialog.interlocutor}}
+                    </a>
+                    <div class="collapse" id="collapseDialog{{dialog.interlocutor.id}}">
+                        {% if not dialog.messages %}
+                            <h3>No messages!you can start chating hear</h3>
+                        {% endif %}        
+                        {% for message in dialog.messages %}
+                            {% if message.author == request.user %}
+                                <div class=" align_right">
+                                    <a class="smouth_gray" href="{% url 'main:public_profile' id=message.author.id %}">
+                                        <img class="image-fluid float-left img_cirqle mx-2 my-2" src="{{MEDIA_URL}}{{message.author.user_favicon}}">
+                                    </a>
+                                    <a class="smouth_gray" href="{% url 'main:public_profile' id=message.author.id %}">
+                                        {{message.author.username}}
+                                    </a>
+                                    <h2>{{message.text}}:</h2>
+                                    <h3>{{message.date_created.time}}</h3>
+                                </div>
+                            {% else %}
+                                <div class="d-flex flex-row align_right">
+                                    <a class="smouth_gray" href="{% url 'main:public_profile' id=message.author.id %}">
+                                        <img class="image-fluid float-left img_cirqle mx-2 my-2" src="{{MEDIA_URL}}{{message.author.user_favicon}}">
+                                    </a>
+                                    <a class="smouth_gray" href="{% url 'main:public_profile' id=message.author.id %}">
+                                        {{message.author.username}}
+                                    </a>
+                                    <h2>{{message.text}}:</h2>
+                                    <h3>{{message.date_created.time}}</h3>
+                                </div>
+                            {% endif %}
+                        {% endfor %}   
+                        <form action="{% url 'main:profile_messages' %}?addressee_id={{ dialog.interlocutor.id }}" method="POST">
+                            {% csrf_token %}
+                            {{messageForm.as_p}}
+                            <input type="submit" class="btn btn-primary " ></input>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
         <div class="page-links">
             {% if page.has_next %}
