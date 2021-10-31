@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <div class="container">
+        <div>
+            {% for dialog in dialogs %}
+                <a class="btn btn-primary" 
+                data-toggle="collapse" 
+                href="#collapseDialog{{dialog.interlocutor.id}}" 
+                role="button" 
+                aria-expanded="false" 
+                aria-controls="collapseExample">
+                    {{dialog.interlocutor}}
+                </a>
+                <div class="collapse" id="collapseDialog{{dialog.interlocutor.id}}">        
+                    {% for message in dialog.messages %}
+                        <div>
+                            <h1>
+                                {{message.author.username}}
+                            </h1>
+                            <h2>
+                                {{message.text}}:
+                            </h2>
+                            <h3>
+                                {{message.date_created}}
+                            </h3>
+                        </div>
+                    {% endfor %}   
+                </div>
+            {% endfor %}
+        </div>
+        <div class="page-links">
+            {% if page.has_next %}
+                <a class="infinite-more-link" 
+                href="{% url 'main:profile_messages' %}?page={{ page.next_page_number }}">
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <script>
+        let $infinite_container = $('.infinite_container').infiniteScroll({
+        path: '.infinite-more-link',
+        append: '.infinite-item',
+        });
+        let infScroll = $infinite_container.data('infiniteScroll');
+    </script>
+
+{% endblock %}
+
