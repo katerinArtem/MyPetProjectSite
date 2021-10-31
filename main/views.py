@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404, render,redirect
 from django.http import HttpResponse,Http404,HttpResponseRedirect, request
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import NewUserForm,UserUpdateForm,NewPostForm
+from .forms import NewDialogForm, NewUserForm,UserUpdateForm,NewPostForm,NewMessageForm
 from django.contrib.auth import login
 from django.contrib import messages
+from django.contrib import messages as mess
 from .models import Post,CustomUser,Message
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from itertools import chain
@@ -21,7 +22,40 @@ def home(request):
 def features(request):
     return render(request,'main/features.html')
 
+@login_required
 def profile_messages(request,context={}):
+    if request.method == 'POST':
+        addressee_id = request.GET.get('addressee_id')
+        if  addressee_id != '-1':
+            form = NewMessageForm(data=request.POST or None)
+        elif addressee_id == '-1':
+            form = NewDialogForm(data=request.POST or None)
+
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.author = request.user
+            message.save()
+            form.save_m2m()
+            print(addressee_id)
+            print(type(addressee_id))
+            print(addressee_id != -1)
+            if addressee_id != '-1':
+                print(addressee_id)
+                message.addressee.add(CustomUser.objects.filter(id = addressee_id).first())
+                print(CustomUser.objects.filter(id = addressee_id))
+            mess.success(request, "Message send successful." )
+            return redirect('main:profile_messages')
+    mess.error(request, "Message doun't  send. Invalid information.")
+
+    messageForm = NewMessageForm()
+    messageForm.fields['text'].widget.attrs = {
+        'class':'form-control','id':'inputText','placeholder':'text'
+    }
+
+    dialogForm = NewDialogForm()
+    dialogForm.fields['text'].widget.attrs = {
+        'class':'form-control','id':'inputText','placeholder':'text'
+    }
 
     messages = Message.objects.filter(
         Q(addressee=request.user) |
@@ -30,30 +64,32 @@ def profile_messages(request,context={}):
 
     interlocutor_ids = set()
 
-    for it in messages.all():
-        interlocutor_ids.add(it.author.id)
-
-    interlocutor_ids.remove(request.user.id)    
+    for message in messages.all():
+        if message.author == request.user:
+            for it in message.addressee.all():
+                interlocutor_ids.add(it.id)
+        if request.user in message.addressee.all():
+            interlocutor_ids.add(message.author.id)
+  
 
     dialogs = []
     
     for it in interlocutor_ids:
         interlocutor = CustomUser.objects.filter(id = it).first()
-        messages = Message.objects.filter(author = interlocutor).all()
-
         messages = Message.objects.filter(
             Q(Q(addressee=request.user) & Q(author=interlocutor))|
-            Q(Q(author=request.user) & Q(addressee=interlocutor)) 
+            Q(Q(author=request.user) & Q(addressee=interlocutor))
         )
         messages = sorted(messages,key=attrgetter('date_created'))
-
         dialog = {'messages': messages,'interlocutor': interlocutor}
         dialogs.append(dialog)
-
-    context.update({
-        'dialogs':dialogs
-    })
     
+    context.update({
+        'dialogs':dialogs,
+        'dialogForm':dialogForm,
+        'messageForm':messageForm
+    })
+
     return render(request,'main/profile_messages.html',context)
 
 
