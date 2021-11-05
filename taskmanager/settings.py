@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 CORS_ORIGIN_WHITELIST = [
      'http://127.0.0.1:8000'
 ]
+CORS_ORIGIN_WHITELIST = [
+     'http://localhost:3000'
+]
 
 from pathlib import Path
 import os,sys
@@ -138,8 +141,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    (BASE_DIR /"static/"),
-    (BASE_DIR /'frontend/build/static')
+    BASE_DIR /"static/",
+    os.path.join(os.path.join(BASE_DIR, 'frontend'), 'build', 'static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR,"staticfiles")
 MEDIA_URL = '/media/'
