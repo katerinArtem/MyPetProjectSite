@@ -23,8 +23,15 @@ from .forms import LoginForm
 from django.contrib.auth.views import LoginView
 from . import settings
 from django.conf.urls.static import static
+from rest_framework import routers
+from main import views
+
+router = routers.DefaultRouter()
+router.register('posts', views.PostView, 'posts')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
     path('',include('main.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
     path('login/',LoginView.as_view(template_name="login.html",authentication_form=LoginForm),name='_login'),
