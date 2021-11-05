@@ -1,17 +1,28 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, render,redirect
 from django.http import HttpResponse,Http404,HttpResponseRedirect, request
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import NewDialogForm, NewUserForm,UserUpdateForm,NewPostForm,NewMessageForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib import messages as mess
-from .models import Post,CustomUser,Message
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from itertools import chain
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 from django.db.models import Q
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
+from django.core import serializers
+from rest_framework import viewsets
+from rest_framework.serializers import SerializerMetaclass
+from .models import Post,CustomUser,Message
+from .forms import NewDialogForm, NewUserForm,UserUpdateForm,NewPostForm,NewMessageForm
+from .serializers import CustomUserSerializer,PostSerializer,MessageSerializer
 
+
+class PostView(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
 
 def index(request):
     return HttpResponse("Hello world!")
@@ -22,9 +33,30 @@ def home(request):
 def features(request):
     return render(request,'main/features.html')
 
+
+def profile_dialog(request):
+    interlocutor_id = request.GET.get('interlocutor_id')
+    if request.method == 'POST' and request.is_ajax():
+        addressee_id = interlocutor_id
+        form = NewMessageForm(data=request.POST or None)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.author = request.user
+            message.save()
+            form.save_m2m()
+            message.addressee.add(CustomUser.objects.filter(id = addressee_id).first())
+            mess.success(request, "Message send successful." )
+            response = {'info':'info'}
+            return JsonResponse(response)
+    mess.error(request, "Message doun't  send. Invalid information.")
+    interlocutor = CustomUser.objects.filter(id = interlocutor_id).first()
+    interlocutor_json = serializers.serialize('json',[interlocutor])
+    response = {'interlocutor': interlocutor_json}
+    return JsonResponse(response)
+
 @login_required
-def profile_messages(request,context={}):
-    if request.method == 'POST':
+def profile_dialogs(request,context={}):
+    if  request.method == 'POST' and request.is_ajax() == False:
         addressee_id = request.GET.get('addressee_id')
         if  addressee_id != '-1':
             form = NewMessageForm(data=request.POST or None)
@@ -36,15 +68,10 @@ def profile_messages(request,context={}):
             message.author = request.user
             message.save()
             form.save_m2m()
-            print(addressee_id)
-            print(type(addressee_id))
-            print(addressee_id != -1)
             if addressee_id != '-1':
-                print(addressee_id)
                 message.addressee.add(CustomUser.objects.filter(id = addressee_id).first())
-                print(CustomUser.objects.filter(id = addressee_id))
             mess.success(request, "Message send successful." )
-            return redirect('main:profile_messages')
+            return redirect('main:profile_dialogs')
     mess.error(request, "Message doun't  send. Invalid information.")
 
     messageForm = NewMessageForm()
@@ -71,6 +98,7 @@ def profile_messages(request,context={}):
         if request.user in message.addressee.all():
             interlocutor_ids.add(message.author.id)
   
+    
 
     dialogs = []
     
@@ -81,19 +109,26 @@ def profile_messages(request,context={}):
             Q(Q(author=request.user) & Q(addressee=interlocutor))
         )
         messages = sorted(messages,key=attrgetter('date_created'))
-        dialog = {'messages': messages,'interlocutor': interlocutor}
+        first = messages[messages.__len__()-1]
+        first.text = first.text[0:45] + '...' 
+        dialog = {
+            'messages': messages,
+            'interlocutor': interlocutor,
+            'first':first,}
         dialogs.append(dialog)
-    
+  
+    dialogs = sorted(dialogs,key = lambda k: k['first'].date_created,reverse=True)
+  
     context.update({
         'dialogs':dialogs,
         'dialogForm':dialogForm,
         'messageForm':messageForm
     })
 
-    return render(request,'main/profile_messages.html',context)
+    return render(request,'main/profile_dialogs.html',context)
 
 
-def public_profile(request,id):
+def public_profile(request,id=None):
 
     public_user = CustomUser.objects.filter(id = id).first() 
 
