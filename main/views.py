@@ -19,13 +19,12 @@ from .models import Post,CustomUser,Message
 from .forms import NewDialogForm, NewUserForm,UserUpdateForm,NewPostForm,NewMessageForm
 from .serializers import CustomUserSerializer,PostSerializer,MessageSerializer
 
-
 class PostView(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
 def index(request):
-    return HttpResponse("Hello world!")
+    return render(request,'index.html',{})
 
 def home(request):
     return render(request,'main/home.html')
