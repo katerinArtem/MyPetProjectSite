@@ -14,5 +14,6 @@ urlpatterns = [
     path('profile/posts/delete/<int:id>',views.delete_post,name='delete_post'),
     path('profile/posts/update/<int:id>',views.update_post,name='update_post'),
     path('profile/public/<int:id>',views.public_profile,name='public_profile'),
-    path('profile/messages/',views.profile_messages,name='profile_messages')
+    path('profile/dialogs/',views.profile_dialogs,name='profile_dialogs'),
+    path('profile/dialog/',views.profile_dialog,name="profile_dialog"),
 ]
