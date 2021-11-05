@@ -1,67 +1,89 @@
 .alas {
     overflow-wrap: break-word;
-  }
-  
-.content_padding {
-    padding-top: 80px;
-}
-
-.background_content_color {
-  background-color:#eeeeee;
+  } 
+.background_content {
+  background-color:#e2e2ee;
+  min-height:700px;
+  width: 100%;
 }
 body{
   text-align: left;
 }
-
-.card{
-  border-radius: 10px;
-}
-
 .img_cirqle{
-  max-width: 100px;
   border-radius: 50%;
 }
-
-
-
-.align_center{
-  text-align: center;
-}
-.align_right{
-  text-align: right;
-}
-
 .footer_color{
   background-color: #343A40;
   min-height: 100px;
 }
-
-.smouth_gray{
-  color: #B09795;
-}
-
-.content_height{
-  min-height:700px;
-}
-
 .thirty{
   min-width:20px;
   min-height: 20px;
   margin-top: 15.5%;
   margin-bottom: 15.5%;
 }
-
-.fill_all_width{
- width:100%;
+._container{
+  text-align:center;
 }
-.fill_all_height{
-  height:100%;
+img{
+  width: auto;
+  height: 100%;
 }
-.inline-fix{
-  max-inline-size: max-content;
-  writing-mode: horizontal-tb; 
+.new_post{
+  text-align: center;
 }
-
-.out_of_wrap{
-  overflow-wrap:unset;
+.new_post .collapse{
+  margin-right: auto;
+  margin-left: auto;
+  width: 80%;
+}
+.post{
+  width: 80%;
+  margin: 0px auto;
+  overflow:auto;
+  margin-top:20px;
+  
+}
+.post .author{
+  display: inline-block;
+  width:13%;
+  vertical-align: top;
+  padding-top: 10px;
+}
+.post .author a{
+  text-decoration: none;
+}
+.post .author a:hover{
+  color:gray;
+}
+.post .author .name{
+  display: block;
+  text-align: center;
+  color:rgb(49, 34, 34);
+}
+.post .author .img{
+  height: 110px;
+  display: block;
+  text-align: center;
+}
+.post .content{
+  background-color: whitesmoke;
+  border-radius: 8px;
+  display: inline-block;
+  width:84%;
+  min-height: 140px;
+  padding:20px;
+}
+.post .content .text{
+  display: block;
+  overflow-wrap: break-word;
+}
+.post .content .title{
+  display: block;
+  overflow-wrap: break-word;
+  font-size: 20px;
+}
+.post .content .date{
+  display: block;
+  font-weight: bold;
 }
