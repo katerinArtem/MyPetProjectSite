@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    
+<head>    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.0/font/bootstrap-icons.css">
     {% load static %}
     <link rel="stylesheet" href="{% static 'posts.css' %}">
-      <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile_dialogs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile_dialog.css' %}">
+      <meta charset="UTF-8" content="width=device-width, initial-scale=1">
     <title>{% block title %}Home Page{% endblock %}</title>
 </head>
 <body>
-  {%block errors%}
+  <div class="wrapper">
+    {%block errors%}
   {% for field in form.fields %}
     {% if field.errors %}
             <div class="alert alert-danger">
@@ -27,61 +30,42 @@
   {%endblock%}
     {%block header%}
     <header>
-      <nav class="navbar navbar-fixed-top bg-dark text-white ">
-        <div class="container-fluid">
-          <div class="d-flex flex-wrap align-items-center justify-content-end ">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-              <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
-            </a>
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-end mb-md-0">
-              <li><a href="{% url 'main:home' %}" class="nav-link px-2 text-secondary">Home</a></li>
-              <li><a href="{% url 'main:posts' %}" class="nav-link px-2 text-white">Posts</a></li>
-              <li><a href="{% url 'main:features' %}" class="nav-link px-2 text-white">Features</a></li>
-              <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-              <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-              <li><a href="#" class="nav-link px-2 text-white">About</a></li>
-              <li>
-                <form class="col-12 my-2 ">
-                  <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
-                </form>
-              </li>
-              {%if  user.is_authenticated%}
-              <li>
-                <li class="nav-item  dropleft">
-                  <a class="nav-link px-2 text-white dropdown-toggle" href="#" id="navbarDropdown" 
-                  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      {{user.username}}
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'main:profile_update' %}">Profile</a>
-                    <a class="dropdown-item" href="{% url 'main:profile_posts' %}">Your posts</a>
-                    <a class="dropdown-item" href="{% url 'main:profile_messages' %}">Messages</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'main:home'%}admin/">Admin Panel</a>
-                  </div>
-                </li>
-              </li>
-              {%else%}
-              <div class="text-end">
-                <button id="Login" type="button" class="btn btn-outline-light me-2">Login</button>
-                <script type="text/javascript">
-                  document.getElementById("Login").onclick = function () {
-                      location.href = "{% url '_login' %}";
-                  };
-                </script>
-                <button id="Sign-up" type="button" class="btn btn-warning ">Sign-up</button>
-                <script type="text/javascript">
-                  document.getElementById("Sign-up").onclick = function () {
-                      location.href = "{% url 'main:sign_up' %}";
-                  };
-                </script>
-              </div>
-              {%endif%}
+      <div class="fixed-top _navbar" id="navMenu">
+        <div class="itemlist" >
+          <a class="linkItem" href="{% url 'main:home' %}"><div>Home</div></a>
+          <a class="linkItem" href="{% url 'main:posts' %}"><div>Posts</div></a>
+          <a class="linkItem" href="{% url 'main:features' %}"><div>Features</div></a>
+          <form class="formItem">
+            <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+          </form>
+          {% if user.is_authenticated %}
+          <div class="_dropdown" >
+            <button class="_dropbtn">{{user.username}}</button>
+            <div class="_dropdown-content" style="right: 0;">
+              <a href="{% url 'main:profile_update' %}">Profile</a>
+              <a href="{% url 'main:profile_posts' %}">Your posts</a>
+              <a href="{% url 'main:profile_dialogs' %}">Dialogs</a>
+              <a href="{% url 'logout' %}">Logout</a>
+              <a href="{% url 'main:home'%}admin/">Admin Panel</a>
+            </div>
           </div>
+          <a class="imglinkItem" href="{% url 'main:profile_update' %}">
+            <img class="img_cirqle" src="{{MEDIA_URL}}{{user.user_favicon}}">
+          </a>
+          {%else%}
+          <button class="btn btn-outline-light" id="Login" type="button">Login</button>
+          <button class="btn btn-warning " id="Sign-up" type="button">Sign-up</button>
+          <script >
+            document.getElementById("Login").onclick = function () {
+              location.href = "{% url '_login' %}";
+            };
+            document.getElementById("Sign-up").onclick = function () {
+              location.href = "{% url 'main:sign_up' %}";
+            };
+          </script>
+          {%endif%}
         </div>
-      </nav>
+      </div>
     </header>
     {%endblock%}
 
@@ -94,25 +78,27 @@
     {% endif %}
 
 
+    
     <script src="{% static 'js/jquery-3.6.0.js' %}"></script>
-    <script src="{% static 'js/infinite-scroll.js' %}"></script>
+    <script src="{% static 'js/infinite-scroll.js' %}"></script>    
 
 
-    <div class="background_content_color ">
-      <div class="content_padding content_height">
-        {%block content%}
-        {%endblock%}
-      </div>
+    <div id="godown" class=" background_content">
+      {%block content%}
+      {%endblock%}  
     </div>
 
     
-    
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <!--
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    
-</body>
-{% block footer %}
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/profile_dialogs.js' %}"></script>
+    <script src="{% static 'js/posts.js' %}"></script>
+
+    {% block footer %}
     <div class="page-footer footer_color">
       
       <a href="#">
@@ -123,5 +109,7 @@
       </a>
       
     </div>
-{% endblock %}
+    {% endblock %}
+  </div>
+</body>
 </html>
