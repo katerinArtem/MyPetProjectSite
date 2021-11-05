@@ -1,0 +1,77 @@
+.dialogs{
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.link-spanner{
+    position:absolute; 
+    width:100%;
+    height:100%;
+    top:0;
+    left: 0;
+    z-index: 1;
+  }   
+.dialogs .lastMessage{
+    display: flex;
+    margin-top: 10px;
+    height: 130px;
+    position: relative;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px;
+}
+.dialogs .lastMessage:hover{
+    opacity: 0.8;
+}
+.dialogs .lastMessage .interlocutor{
+    display: inline-block;
+    min-width: 18%;
+    max-width: 24%;
+}
+.dialogs .lastMessage .interlocutor .img{
+    height: 100px;
+    display: block;
+    position: relative;
+    margin-bottom: 5px;
+    z-index: 2;
+}
+.dialogs .lastMessage .interlocutor .name{
+    display: block;  
+    position: relative;
+    z-index: 2;
+}
+.dialogs .lastMessage .author{
+    display: inline-block;
+    min-width: 13%;
+    max-width: 16%;
+}
+.dialogs .lastMessage .author .img{
+    height: 65px;
+    display: block;
+    position: relative;
+    margin-bottom: 8px;
+    z-index: 2;
+}
+.dialogs .lastMessage .author .name{
+    display: block;
+    position: relative;
+    z-index: 2;
+}
+
+.dialogs .lastMessage .content{
+    display: inline-block;
+    width: 50%;             
+}
+.dialogs .lastMessage .content .text{
+    display: block;
+    font-size: 16px;
+}
+.dialogs .lastMessage .info{
+    display: inline-block;
+    width: 10%;
+    margin-left: auto;
+}
+.dialogs .lastMessage .info .date{
+    display: block;
+}
+
