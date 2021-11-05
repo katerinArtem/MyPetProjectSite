@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="_container">
+        <div class="dialogs">
+            <form class="newDialog" action="{% url 'main:profile_dialogs' %}?addressee_id=-1" method="POST">
+                {% csrf_token %}
+                {{dialogForm.as_p}}
+                <input type="submit" class="btn btn-primary " ></input>
+            </form>
+            <div class="infinite_container">
+                {% for dialog in dialogs %}
+                    <div class="infinite-item ">
+                        <div class="lastMessage">
+                            <a href="javascript:openDialog(
+                            {{dialog.interlocutor.id}},
+                            '{% url 'main:profile_dialog' %}',
+                            '{% url 'main:public_profile' id=0 %}',
+                            '{{MEDIA_URL}}')">
+                                <span class="link-spanner"></span>
+                            </a>
+                            <div class="interlocutor">
+                                <a class="img" href="{% url 'main:public_profile' id=dialog.interlocutor.id %}">
+                                    <img class="img_cirqle mx-2 my-2" src="{{MEDIA_URL}}{{dialog.interlocutor.user_favicon}}">
+                                </a>
+                                <a class="name" href="{% url 'main:public_profile' id=dialog.interlocutor.id %}">
+                                    {{dialog.interlocutor.username}}
+                                </a>
+                            </div>
+                            <div class="author">
+                                <a class="img" href="{% url 'main:public_profile' id=dialog.first.author.id %}">
+                                    <img class="img_cirqle mx-2 my-2" src="{{MEDIA_URL}}{{dialog.first.author.user_favicon}}">
+                                </a>
+                                <a class="name" href="{% url 'main:public_profile' id=dialog.first.author.id %}">
+                                    {{dialog.first.author.username}}
+                                </a>
+                            </div>
+                            <div class="content">
+                                <div class="text">
+                                    {{dialog.first.text}}
+                                </div>
+                            </div>
+                            <div class="info">
+                                <div class="date">
+                                    {{dialog.first.date_created.time}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="dialog">
+            <div class="header">
+                <a class="img"><img class="img_cirqle mx-2 my-2"></a>
+                <a class="name" href=""></a>
+            </div>
+            <div class="infinite_container">
+                <div class="infinite-item">
+                    <div class="message">
+                        <div class="author">
+                            <a class="img"><img class="img_cirqle mx-2 my-2"></a>
+                            <a class="name" href=""></a>
+                        </div>
+                        <div class="content">
+                            <div class="text"></div>
+                        </div>
+                        <div class="info">
+                            <div class="date"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="input">
+                <form class="new">
+                    {% csrf_token %}
+                    {{messageForm.as_p}}
+                    <input type="submit" class="btn btn-primary " ></input>
+                </form>
+            </div>
+        </div>
+
+
+
+        {% for dialog in dialogs %}
+            <a class="btn btn-primary" 
+                data-toggle="collapse" 
+                href="#collapseDialog{{dialog.interlocutor.id}}">
+                {{dialog.interlocutor}}
+            </a>
+            <div class="collapse" id="collapseDialog{{dialog.interlocutor.id}}">
+                {% if not dialog.messages %}
+                    <h3>No messages!you can start chating hear</h3>
+                {% endif %}        
+                {% for message in dialog.messages %}
+                    {% if message.author == request.user %}
+                        <a class="" href="{% url 'main:public_profile' id=message.author.id %}">
+                            <img class="img_cirqle mx-2 my-2" src="{{MEDIA_URL}}{{message.author.user_favicon}}">
+                        </a>
+                        <a class="" href="{% url 'main:public_profile' id=message.author.id %}">
+                            {{message.author.username}}
+                        </a>
+                        <h2>{{message.text}}:</h2>
+                        <h3>{{message.date_created.time}}</h3>
+                    {% else %}
+                        <a class="" href="{% url 'main:public_profile' id=message.author.id %}">
+                            <img class="image-fluid float-left img_cirqle mx-2 my-2" src="{{MEDIA_URL}}{{message.author.user_favicon}}">
+                        </a>
+                        <a class="" href="{% url 'main:public_profile' id=message.author.id %}">
+                            {{message.author.username}}
+                        </a>
+                        <h2>{{message.text}}:</h2>
+                        <h3>{{message.date_created.time}}</h3>
+                    {% endif %}
+                {% endfor %}   
+                <form action="{% url 'main:profile_dialogs' %}?addressee_id={{ dialog.interlocutor.id }}" method="POST">
+                    {% csrf_token %}
+                    {{messageForm.as_p}}
+                    <input type="submit" class="btn btn-primary " ></input>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="page-links">
+        {% if page.has_next %}
+            <a class="infinite-more-link" 
+            href="{% url 'main:profile_dialogs' %}?page={{ page.next_page_number }}">
+            </a>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
