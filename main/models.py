@@ -3,7 +3,21 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 # Create your models here.
+class Message(models.Model):
+    text = models.TextField(verbose_name="Контент")
+    author = models.ForeignKey('CustomUser',on_delete=models.CASCADE,related_name='author')
+    addressee = models.ManyToManyField('CustomUser',related_name='addressee_set')
+    date_created = models.DateTimeField(auto_now_add = True,verbose_name="Время отправки")
+
+    def __str__(self):
+        return str(self.author.username)  +":  "+ str(self.text)
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Собщения'
+
 class Post(models.Model):
+    authorkey = models.ForeignKey('CustomUser',on_delete=models.CASCADE,)
     author = models.CharField(max_length=50,verbose_name="Автор")
     title = models.CharField(max_length=255,verbose_name="Название")
     content = models.TextField(verbose_name="Контент")
@@ -15,7 +29,6 @@ class Post(models.Model):
     class Meta:
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
-
 class CustomUserManager(BaseUserManager):
     def create_user(self,email,username,password = None):
         if not email:
@@ -48,6 +61,7 @@ class CustomUser(AbstractBaseUser):
     is_active =models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    user_favicon = models.ImageField(null=True,blank = True,upload_to='images/')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['username']

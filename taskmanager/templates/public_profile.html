@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}{{public_user.username}}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4 ">
+            <div class="card  my-2">
+                <img  class="  mx-2 my-2" src="{{MEDIA_URL}}{{public_user.user_favicon}}">
+            </div>
+            <div class="card my-2">
+                <h3 class="align_center">Post count: {{posts_count}}</h3>
+            </div>
+            <div class="card ">
+                <div class="d-flex">
+                    <div class="py-1 px-2 pr-2 ml-2">
+                        <h4>
+                            Username:
+                        </h4>
+                        <h4>
+                            Email:
+                        </h4>
+                        <h4 style="white-space: nowrap;">
+                            First Name:
+                        </h4 style="white-space: nowrap;">
+                        <h4 style="white-space: nowrap;">
+                            Last Name:
+                        </h4>
+                    </div>
+                    <div  class="  py-1 px-2 ">
+                        <h4 >
+                            {{public_user.username}}
+                        </h4>
+                        <h4> 
+                            {{public_user.email}}
+                        </h4>
+                        <h4> 
+                            {{public_user.first_name}}
+                        </h4>
+                        <h4 >
+                            {{public_user.last_name}}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+   
+                <div class="form-group smouth_gray align_center">
+                    <label  for="LastLogin">
+                        Последний вход
+                    </label>
+                    {{public_user.last_login}}
+                </div>
+                <div class="form-group smouth_gray align_center">
+                    <label  for="DateJoined">
+                        Дата регистрации
+                    </label>
+                    {{public_user.date_joined}}
+                </div>
+            </div>
+        </div>    
+    </div>
+</div>
+</div>
+
+
+{% endblock %}

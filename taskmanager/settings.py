@@ -10,8 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+CORS_ORIGIN_WHITELIST = [
+     'http://127.0.0.1:8000'
+]
+
 from pathlib import Path
 import os,sys
+
+import django
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'taskmanager.urls'
@@ -69,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -76,6 +86,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'taskmanager.wsgi.application'
 AUTH_USER_MODEL = 'main.CustomUser'
+LOGIN_URL = '/login/'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -129,6 +140,8 @@ STATICFILES_DIRS = [
     BASE_DIR /"static/",
 ]
 STATIC_ROOT = os.path.join(BASE_DIR,"staticfiles")
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

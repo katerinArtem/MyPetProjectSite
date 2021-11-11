@@ -1,13 +1,28 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, render,redirect
 from django.http import HttpResponse,Http404,HttpResponseRedirect, request
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import NewUserForm,UserUpdateForm,NewPostForm
 from django.contrib.auth import login
 from django.contrib import messages
-from .models import Post,CustomUser
+from django.contrib import messages as mess
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from itertools import chain
+from operator import attrgetter, itemgetter
+from django.db.models import Q
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
+from django.core import serializers
+from rest_framework import viewsets
+from rest_framework.serializers import SerializerMetaclass
+from .models import Post,CustomUser,Message
+from .forms import NewDialogForm, NewUserForm,UserUpdateForm,NewPostForm,NewMessageForm
+from .serializers import CustomUserSerializer,PostSerializer,MessageSerializer
 
+
+class PostView(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
 
 def index(request):
     return HttpResponse("Hello world!")
@@ -18,6 +33,111 @@ def home(request):
 def features(request):
     return render(request,'main/features.html')
 
+
+def profile_dialog(request):
+    interlocutor_id = request.GET.get('interlocutor_id')
+    if request.method == 'POST' and request.is_ajax():
+        addressee_id = interlocutor_id
+        form = NewMessageForm(data=request.POST or None)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.author = request.user
+            message.save()
+            form.save_m2m()
+            message.addressee.add(CustomUser.objects.filter(id = addressee_id).first())
+            mess.success(request, "Message send successful." )
+            response = {'info':'info'}
+            return JsonResponse(response)
+    mess.error(request, "Message doun't  send. Invalid information.")
+    interlocutor = CustomUser.objects.filter(id = interlocutor_id).first()
+    interlocutor_json = serializers.serialize('json',[interlocutor])
+    response = {'interlocutor': interlocutor_json}
+    return JsonResponse(response)
+
+@login_required
+def profile_dialogs(request,context={}):
+    if  request.method == 'POST' and request.is_ajax() == False:
+        addressee_id = request.GET.get('addressee_id')
+        if  addressee_id != '-1':
+            form = NewMessageForm(data=request.POST or None)
+        elif addressee_id == '-1':
+            form = NewDialogForm(data=request.POST or None)
+
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.author = request.user
+            message.save()
+            form.save_m2m()
+            if addressee_id != '-1':
+                message.addressee.add(CustomUser.objects.filter(id = addressee_id).first())
+            mess.success(request, "Message send successful." )
+            return redirect('main:profile_dialogs')
+    mess.error(request, "Message doun't  send. Invalid information.")
+
+    messageForm = NewMessageForm()
+    messageForm.fields['text'].widget.attrs = {
+        'class':'form-control','id':'inputText','placeholder':'text'
+    }
+
+    dialogForm = NewDialogForm()
+    dialogForm.fields['text'].widget.attrs = {
+        'class':'form-control','id':'inputText','placeholder':'text'
+    }
+
+    messages = Message.objects.filter(
+        Q(addressee=request.user) |
+        Q(author=request.user)
+    )
+
+    interlocutor_ids = set()
+
+    for message in messages.all():
+        if message.author == request.user:
+            for it in message.addressee.all():
+                interlocutor_ids.add(it.id)
+        if request.user in message.addressee.all():
+            interlocutor_ids.add(message.author.id)
+  
+    
+
+    dialogs = []
+    
+    for it in interlocutor_ids:
+        interlocutor = CustomUser.objects.filter(id = it).first()
+        messages = Message.objects.filter(
+            Q(Q(addressee=request.user) & Q(author=interlocutor))|
+            Q(Q(author=request.user) & Q(addressee=interlocutor))
+        )
+        messages = sorted(messages,key=attrgetter('date_created'))
+        first = messages[messages.__len__()-1]
+        first.text = first.text[0:45] + '...' 
+        dialog = {
+            'messages': messages,
+            'interlocutor': interlocutor,
+            'first':first,}
+        dialogs.append(dialog)
+  
+    dialogs = sorted(dialogs,key = lambda k: k['first'].date_created,reverse=True)
+  
+    context.update({
+        'dialogs':dialogs,
+        'dialogForm':dialogForm,
+        'messageForm':messageForm
+    })
+
+    return render(request,'main/profile_dialogs.html',context)
+
+
+def public_profile(request,id=None):
+
+    public_user = CustomUser.objects.filter(id = id).first() 
+
+    context = {
+        'posts_count':Post.objects.filter(authorkey = public_user).__len__(),
+        'public_user':public_user
+    }
+
+    return render(request,'public_profile.html',context)
 
 @login_required
 def update_post(request,id):
@@ -30,8 +150,6 @@ def update_post(request,id):
             messages.success(request,"Update successful.")
             return profile_posts(request)
         messages.error(request, "Unsuccessful update")
-
-    
 
     form = NewPostForm(instance=obj.first())
     form.fields['title'].widget.attrs = {'class':'form-control','id':'inputTitle'}
@@ -68,6 +186,7 @@ def posts(request):
         form = NewPostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
+            post.authorkey = request.user
             post.author = request.user.username
             post.save()
             messages.success(request, "Post added successful." )
@@ -125,7 +244,7 @@ def sign_up(request):
 def profile_update(request):
     user = request.user
     if (request.method == 'POST'):
-        form = UserUpdateForm(request.POST,instance=user)
+        form = UserUpdateForm(request.POST,request.FILES,instance=user)
         if form.is_valid():
             form.save()
             messages.success(request,"Update successful.")
