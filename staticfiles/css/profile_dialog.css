@@ -1,0 +1,7 @@
+.dialog{
+    display:none;
+}
+.dialog .header{
+    display: block;
+    background-color: blue;
+}

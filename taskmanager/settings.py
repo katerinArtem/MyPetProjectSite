@@ -17,6 +17,8 @@ CORS_ORIGIN_WHITELIST = [
      'http://localhost:3000'
 ]
 
+
+
 from pathlib import Path
 import os,sys
 
@@ -34,9 +36,9 @@ PROJECT_ROOT = os.path.dirname(__file__)
 SECRET_KEY = 'django-insecure--=vk3n00^urllf_9gmwu*+u1g2n4qil5p(&dfnc_2-e%4*xymv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
